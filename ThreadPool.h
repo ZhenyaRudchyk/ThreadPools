@@ -5,6 +5,7 @@
 #include <thread>
 #include <unordered_map>
 #include <future>
+
 #include "Logger.h"
 #include "ThreadSafeQueue.h"
 
@@ -40,9 +41,9 @@ namespace thread_pool
                      IncreaseThreads fpIncreaseThreadsAlgorithm);
       bool Start();
       template <typename TCallable, typename ... TArgs>
-      void AddTaskWithoutResult(TCallable &&func, TArgs &&... args);
+		void AddTaskWithoutResult(TCallable &&func, TArgs &&... args);
        template <typename TCallable, typename ... TArgs>
-   void AddTaskWithoutResult2(TCallable &&func, TArgs &&... args);
+		void AddTaskWithoutResult2(TCallable &&func, TArgs &&... args);
    // template <typename TCallable, typename ... TArgs>
       //auto AddTaskWithFutureResult(TCallable &&func, TArgs &&... args) -> std::future<typename std::result_of<TCallable(TArgs...)>::type>;
    protected:
@@ -50,9 +51,10 @@ namespace thread_pool
          void StopAcceptingNewTasks();
          bool CreateWorker();
          void DestroyWorker(const ThreadID & threadToDestory); 
+		 void WaitUntilQueueEmpty();
    private:
       ThreadMap m_Workers;
-      uint16_t WorkersCounter;
+      std::atomic<uint16_t> WorkersCounter;
       std::mutex m_WorkersMutex;
       uint16_t m_ui16MaxWorkers;
       uint16_t m_ui16MinWorkers;
@@ -60,6 +62,8 @@ namespace thread_pool
       IncreaseThreads m_fpIncreaseThreadsAlgorithm; // executes under multithreaded code. Take care about synchronization by yourself;
       std::atomic<PoolStatus> m_PoolStatus;
       CThreadSafeQueue<Task> m_TaskQueue;
+	  std::condition_variable m_Waiter;
+	  std::mutex m_WaiterMutex;
    };
   
 
@@ -69,10 +73,7 @@ namespace thread_pool
             g_Logger.WriteToFileWithNewLine("[CDynamicPool::~CDynamicPool] Workers = " + std::to_string(m_Workers.size()) +" "+ ThreadIDToString(std::this_thread::get_id()) + " Queue size =" + std::to_string(m_TaskQueue.Size()));
          #endif  
       StopAcceptingNewTasks();
-      while (m_TaskQueue.Size() != 0)
-      {
-          std::this_thread::sleep_for(std::chrono::milliseconds(500));
-      }
+	  WaitUntilQueueEmpty();
       m_PoolStatus = PoolStatus::Stopped;
       m_TaskQueue.WakeUpAllThreads();
       std::for_each(m_Workers.begin(), m_Workers.end(), [](ThreadMap::value_type& x){ (x.second).join(); });
@@ -87,7 +88,11 @@ namespace thread_pool
             return false;
          } 
          std::thread tempThread (&CDynamicPool::Run, this);
-         m_Workers[tempThread.get_id()] = std::move(tempThread);
+	
+		 {
+			 std::scoped_lock<std::mutex> guard(m_WorkersMutex);
+			 m_Workers[tempThread.get_id()] = std::move(tempThread);
+		 }
          WorkersCounter++;
          #ifdef LOG
             g_Logger.WriteToFileWithNewLine("[CreateWorker] Workers = " + std::to_string(m_Workers.size()) +" "+ ThreadIDToString(std::this_thread::get_id()));
@@ -122,7 +127,6 @@ namespace thread_pool
       {
          for (uint16_t i = 0; i < m_ui16MinWorkers; ++i)
          {
-            std::lock_guard<std::mutex> guard(m_WorkersMutex);
             if(!CreateWorker())
             {
                return false;
@@ -146,15 +150,15 @@ namespace thread_pool
          auto getResult = m_TaskQueue.GetElement(taskToExecute);
          if(getResult == CThreadSafeQueue<Task>::WaitResult::Timeout)
          {
-           std::lock_guard<std::mutex> guard(m_WorkersMutex);
+        
             if(WorkersCounter > m_ui16MinWorkers)
             {
                #ifdef LOG
-               g_Logger.WriteToFileWithNewLine("[Run] TimeOut = " + ThreadIDToString(std::this_thread::get_id())+ " Workers = " + std::to_string(m_Workers.size()));
+               g_Logger.WriteToFileWithNewLine("[Run] TimeOut = " + ThreadIDToString(std::this_thread::get_id())+ " Workers = " + std::to_string(WorkersCounter));
                #endif
                // thread is not useful destroy it
                WorkersCounter--;
-               AddTaskWithoutResult2([this](ThreadID temp1){DestroyWorker(temp1);}, std::this_thread::get_id());
+               AddTaskWithoutResult2([this](ThreadID threadIdToDestroy){DestroyWorker(threadIdToDestroy);}, std::this_thread::get_id());
                break;
             }
             else
@@ -168,6 +172,11 @@ namespace thread_pool
             if(taskToExecute)
             {
                taskToExecute();
+
+			   if (m_PoolStatus == PoolStatus::RunningButDoNotConsumeNewTasks && m_TaskQueue.Size() == 0U)
+			   {
+				   m_Waiter.notify_all();
+			   }
             }
          }
 
@@ -231,8 +240,7 @@ namespace thread_pool
         m_TaskQueue.AddElement([task](){ (*task)();});
         int64_t i64ThreadsToIncreaseNumber = m_fpIncreaseThreadsAlgorithm(m_TaskQueue.Size());
         {
-           std::lock_guard<std::mutex> guard(m_WorkersMutex);
-           std::uint16_t ui16ThreadsPerfectSize = i64ThreadsToIncreaseNumber - WorkersCounter;
+		std::uint16_t ui16ThreadsPerfectSize = i64ThreadsToIncreaseNumber - WorkersCounter;
                for(int64_t i = 0; i < ui16ThreadsPerfectSize; ++i)
                {
                   if(!CreateWorker())
@@ -285,5 +293,13 @@ namespace thread_pool
       return true;
    }
 
+   void CDynamicPool::WaitUntilQueueEmpty()
+   {
+	   std::unique_lock<std::mutex> guard(m_WaiterMutex);
+	   while (m_TaskQueue.Size() != 0)
+	   {
+		   m_Waiter.wait(guard);
+	   }
+   }
 }
 

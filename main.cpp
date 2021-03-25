@@ -8,9 +8,10 @@
 
 CLogger g_Logger;
 int main(int argc, char const *argv[]) {
+	thread_pool::CDynamicPool pool;
 try
 {
- thread_pool::CDynamicPool pool;
+
   do
   {
     if(!g_Logger.Initialize("File.txt"))
@@ -24,7 +25,7 @@ try
      break;
    }
 
-    if(!pool.Initialize(3,20,std::chrono::milliseconds(500),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
+    if(!pool.Initialize(3,20,std::chrono::milliseconds(50),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
     {
       break;
     }
@@ -40,22 +41,21 @@ try
   while (i< 1000)
   {
     pool.AddTaskWithoutResult([](int a){
-    //std::cout << "Hello World " + std::to_string(a) + '\n';
+	std::cout << "Hello World " + std::to_string(a) + '\n';
     }, i);
     i++;
   }
-  std::this_thread::sleep_for(std::chrono::seconds(5));
-
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     int b = 0;
   while (b< 100000)
   {
     pool.AddTaskWithoutResult([](int a){
-    //std::cout << "Hello World " + std::to_string(a) + '\n';
+    std::cout << "Hello World " + std::to_string(a) + '\n';
     }, b);
     b++;
   }
-  std::this_thread::sleep_for(std::chrono::seconds(60));
+  std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 }
 catch(const std::exception& e)
 {

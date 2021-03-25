@@ -5,7 +5,7 @@
 #include <mutex>
 #include <fstream>
 #include <sstream>
-#define LOG;
+#define LOG
 class CLogger
 {
 public:
@@ -14,7 +14,7 @@ public:
   bool Initialize(const std::string & csFileName);
   bool OpenFile();
   bool WriteToFileWithNewLine(const std::string & csMessage);
-  bool CloseFile();
+  void CloseFile();
 private:
 std::mutex m_Locker;
 std::string m_sFilePath;
@@ -46,7 +46,7 @@ bool CLogger::OpenFile()
   
   if(!m_File.fail())
   {
-    std::strerror(errno); 
+	std::strerror(errno); 
   }
   return true;
 }
@@ -71,9 +71,8 @@ bool CLogger::OpenFile()
    return true;
  }
 ///////////////////////////////////////////////////////////////////////////////////////////////
- bool CLogger::CloseFile()
+ void CLogger::CloseFile()
  {
-
    m_File.close();
 
    if(m_File.good())

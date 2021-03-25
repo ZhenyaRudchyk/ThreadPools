@@ -1,0 +1,61 @@
+﻿  main.cpp
+d:\threadpools\threadpool.h(144): warning C4553: '==': result of expression not used; did you intend '='?
+d:\threadpools\threadpool.h(243): warning C4244: 'initializing': conversion from 'int64_t' to 'uint16_t', possible loss of data
+  d:\threadpools\main.cpp(45): note: see reference to function template instantiation 'void thread_pool::CDynamicPool::AddTaskWithoutResult<main::<lambda_5ddc6d18732bdf967b8251bbd755e3d9>,int&>(TCallable &&,int &)' being compiled
+          with
+          [
+              TCallable=main::<lambda_5ddc6d18732bdf967b8251bbd755e3d9>
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\type_traits(16707566): warning C4244: 'return': conversion from 'uint64_t' to '_Rx', possible loss of data
+          with
+          [
+              _Rx=uint16_t
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(15732480): note: see reference to function template instantiation '_Rx std::_Invoker_ret<_Rx,false>::_Call<_Callable&,_Ty>(_Callable &,_Ty &&)' being compiled
+          with
+          [
+              _Rx=uint16_t,
+              _Callable=main::<lambda_85c25ad45629ad7fbdc354ed87251534>,
+              _Ty=uint64_t
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(16707566): note: see reference to function template instantiation '_Rx std::_Invoker_ret<_Rx,false>::_Call<_Callable&,_Ty>(_Callable &,_Ty &&)' being compiled
+          with
+          [
+              _Rx=uint16_t,
+              _Callable=main::<lambda_85c25ad45629ad7fbdc354ed87251534>,
+              _Ty=uint64_t
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(15732480): note: while compiling class template member function '_Rx std::_Func_impl_no_alloc<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,_Rx,uint64_t>::_Do_call(uint64_t &&)'
+          with
+          [
+              _Rx=uint16_t
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(1061): note: see reference to class template instantiation 'std::_Func_impl_no_alloc<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,_Ret,uint64_t>' being compiled
+          with
+          [
+              _Ret=uint16_t
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(1313): note: see reference to class template instantiation 'std::_Is_large<_Impl>' being compiled
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(1502): note: see reference to function template instantiation 'void std::_Func_class<_Ret,uint64_t>::_Reset<main::<lambda_85c25ad45629ad7fbdc354ed87251534>>(_Fx &&)' being compiled
+          with
+          [
+              _Ret=uint16_t,
+              _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\functional(1502): note: see reference to function template instantiation 'void std::_Func_class<_Ret,uint64_t>::_Reset<main::<lambda_85c25ad45629ad7fbdc354ed87251534>>(_Fx &&)' being compiled
+          with
+          [
+              _Ret=uint16_t,
+              _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
+          ]
+  d:\threadpools\main.cpp(28): note: see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,void>(_Fx)' being compiled
+          with
+          [
+              _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
+          ]
+  d:\threadpools\main.cpp(28): note: see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,void>(_Fx)' being compiled
+          with
+          [
+              _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
+          ]
+  DynamicPool.vcxproj -> D:\ThreadPools\ThreadPools\x64\Debug\DynamicPool.exe

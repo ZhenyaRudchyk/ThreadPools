@@ -48,7 +48,7 @@ typename CThreadSafeQueue<T>::WaitResult CThreadSafeQueue<T>::GetElement(T& elem
     {
         return WaitResult::WakeUpAll;
     }
-    //WaitResult eResult = WaitResult::Unknown;
+
     std::unique_lock<std::mutex> guard(m_Locker);
     while (m_Queue.empty())
     {
@@ -78,7 +78,7 @@ template<typename T>
 void CThreadSafeQueue<T>::AddElement(const T& value)
 {
     {
-        std::lock_guard<std::mutex> guard(m_Locker);
+        std::scoped_lock<std::mutex> guard(m_Locker);
         m_Queue.push(value);
         #ifdef LOG
             g_Logger.WriteToFileWithNewLine("[AddElement]  QueueSize = " + std::to_string(m_Queue.size()));
@@ -90,7 +90,7 @@ void CThreadSafeQueue<T>::AddElement(const T& value)
 template<typename T>
 uint64_t CThreadSafeQueue<T>::Size() const
 {
-    std::lock_guard<std::mutex> guard(m_Locker);
+    std::scoped_lock<std::mutex> guard(m_Locker);
     return m_Queue.size();
 }
 ////////////////////////////////////////////////////////////////////////////////
