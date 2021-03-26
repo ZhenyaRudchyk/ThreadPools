@@ -80,13 +80,13 @@ namespace thread_pool
    bool CDynamicPool::CreateWorker()
    {
       if (m_PoolStatus != PoolStatus::Stopped)
-      {     
+      {   
          if(m_Workers.size() >= m_ui16MaxWorkers)
          {
             return false;
-         } 
+         }
          std::thread tempThread (&CDynamicPool::Run, this);
-		 m_Workers[tempThread.get_id()] = std::move(tempThread);
+		    m_Workers[tempThread.get_id()] = std::move(tempThread);
          #ifdef LOG
             g_Logger.WriteToFileWithNewLine("[CreateWorker] Workers = " + std::to_string(m_Workers.size()) +" "+ ThreadIDToString(std::this_thread::get_id()));
          #endif  
@@ -98,18 +98,20 @@ namespace thread_pool
 /////////////////////////////////////////////////////////////////////////////////////
    void CDynamicPool::DestroyWorker(const ThreadID IdThreadToDestory)
    {
-	   m_TaskQueue.AddElement([this, IdThreadToDestory]() {
-		   if (m_PoolStatus != PoolStatus::Stopped)
-		   {
-			   std::scoped_lock<std::mutex> guard(m_WorkersMutex);
-			   m_Workers[IdThreadToDestory].join();
-			   m_Workers.erase(IdThreadToDestory);
-			   --m_ui16DestroyWorkersCounter;
-#ifdef LOG
-			   g_Logger.WriteToFileWithNewLine("[DestroyWorker] Workers = " + std::to_string(m_Workers.size()) + " remained");
-#endif  
-		   }
-	   });
+      if (m_PoolStatus != PoolStatus::Stopped)
+		{
+         m_TaskQueue.AddElement(
+            [this, IdThreadToDestory]() {
+      
+               std::scoped_lock<std::mutex> guard(m_WorkersMutex);
+               m_Workers[IdThreadToDestory].join();
+               m_Workers.erase(IdThreadToDestory);
+               --m_ui16DestroyWorkersCounter;
+            #ifdef LOG
+               g_Logger.WriteToFileWithNewLine("[DestroyWorker] Workers = " + std::to_string(m_Workers.size()) + " remained");
+            #endif  
+         });
+      }
    }
 /////////////////////////////////////////////////////////////////////////////////////
    void CDynamicPool::StopAcceptingNewTasks()
@@ -153,8 +155,8 @@ namespace thread_pool
                  g_Logger.WriteToFileWithNewLine("[Run] TimeOut = " + ThreadIDToString(std::this_thread::get_id())+ " Workers = " + std::to_string(m_Workers.size()));
                 #endif
                // thread is not useful destroy it
-				DestroyWorker(std::this_thread::get_id());
-			    ++m_ui16DestroyWorkersCounter;
+				   DestroyWorker(std::this_thread::get_id());
+			      ++m_ui16DestroyWorkersCounter;
                 break;
             }
             else
@@ -224,12 +226,12 @@ namespace thread_pool
       {
          using PackedTask = std::packaged_task<typename std::result_of<TCallable(TArgs...)>::type()>;
          auto task = std::make_shared<PackedTask>(std::bind(std::forward<TCallable>(func), std::forward<TArgs>(args)...));
-
-        m_TaskQueue.AddElement([task](){ (*task)();});
-        int64_t i64ThreadsToIncreaseNumber = m_fpIncreaseThreadsAlgorithm(m_TaskQueue.Size());
-        {
-			std::scoped_lock<std::mutex> guard(m_WorkersMutex);
-			std::uint16_t ui16ThreadsPerfectSize = i64ThreadsToIncreaseNumber - m_Workers.size();
+         m_TaskQueue.AddElement([task](){ (*task)();
+         });
+         int64_t i64ThreadsToIncreaseNumber = m_fpIncreaseThreadsAlgorithm(m_TaskQueue.Size());
+         {
+			   std::scoped_lock<std::mutex> guard(m_WorkersMutex);
+			   std::uint16_t ui16ThreadsPerfectSize = i64ThreadsToIncreaseNumber - m_Workers.size();
             for(int64_t i = 0; i < ui16ThreadsPerfectSize; ++i)
             {
                 if(!CreateWorker())

@@ -52,9 +52,6 @@ typename CThreadSafeQueue<T>::WaitResult CThreadSafeQueue<T>::GetElement(T& elem
     std::unique_lock<std::mutex> guard(m_Locker);
     while (m_Queue.empty())
     {
-        #ifdef LOG
-         g_Logger.WriteToFileWithNewLine("[GetElement] QueueSize = " + std::to_string(m_Queue.size()));
-        #endif  
         if(m_Notifier.wait_for(guard,m_WaitTime) == std::cv_status::timeout)
         {
         #ifdef LOG
@@ -71,6 +68,9 @@ typename CThreadSafeQueue<T>::WaitResult CThreadSafeQueue<T>::GetElement(T& elem
     element = std::move(m_Queue.front());
     m_Queue.pop();
     m_WaitTime = m_PrimaryWaitTime;
+    #ifdef LOG
+    g_Logger.WriteToFileWithNewLine("[GetElement] QueueSize = " + std::to_string(m_Queue.size()));
+    #endif  
     return WaitResult::GotElement;
 }
 ////////////////////////////////////////////////////////////////////////////////

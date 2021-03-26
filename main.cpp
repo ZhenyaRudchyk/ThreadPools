@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
      break;
    }
 
-    if(!pool.Initialize(3,20,std::chrono::milliseconds(400),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
+    if(!pool.Initialize(3,15,std::chrono::milliseconds(20),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
     {
       break;
     }
@@ -36,13 +36,11 @@ int main(int argc, char const *argv[]) {
     }
   } while (false);
   
-  auto TaskToAdd = []() {
-		  std::uint16_t tempCounter = 0;
-		  while (tempCounter != 1000)
-		  {
-			 // std::cout << "Hello World!!! " << tempCounter << std::endl;
-			  tempCounter++;
-		  }
+  auto TaskToAdd = [&pool]() {
+   for (size_t i = 0; i < 10000; ++i)
+   {
+      pool.AddTaskWithoutResult([](){ std::this_thread::sleep_for(std::chrono::milliseconds(100));  });
+   }
 };
   int newCounter = 0;
   while (newCounter != 5)
@@ -52,5 +50,9 @@ int main(int argc, char const *argv[]) {
   }
   
   std::for_each(threads.begin(), threads.end(), [](std::thread& x) { x.join(); });
+
+  //std::this_thread::sleep_for(std::chrono::seconds(50));
   return 0; 
 }
+//benchmark with time on linux
+// 0.205
