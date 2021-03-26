@@ -39,18 +39,16 @@ namespace thread_pool
                      const uint16_t ui16MaxWorkers,
                      std::chrono::milliseconds WaitTime,
                      IncreaseThreads fpIncreaseThreadsAlgorithm);
-      bool Start();
+       bool Start();
       template <typename TCallable, typename ... TArgs>
-		void AddTaskWithoutResult(TCallable &&func, TArgs &&... args);
-       template <typename TCallable, typename ... TArgs>
-		void AddTaskWithoutResult2(TCallable &&func, TArgs &&... args);
+	    void AddTaskWithoutResult(TCallable &&func, TArgs &&... args);
    // template <typename TCallable, typename ... TArgs>
       //auto AddTaskWithFutureResult(TCallable &&func, TArgs &&... args) -> std::future<typename std::result_of<TCallable(TArgs...)>::type>;
    protected:
          void Run();   
          void StopAcceptingNewTasks();
          bool CreateWorker();
-         void DestroyWorker(const ThreadID & threadToDestory); 
+         void DestroyWorker(const ThreadID threadToDestory); 
 		 void WaitUntilQueueEmpty();
    private:
       ThreadMap m_Workers;
@@ -62,16 +60,16 @@ namespace thread_pool
       IncreaseThreads m_fpIncreaseThreadsAlgorithm; // executes under multithreaded code. Take care about synchronization by yourself;
       std::atomic<PoolStatus> m_PoolStatus;
       CThreadSafeQueue<Task> m_TaskQueue;
-	  std::condition_variable m_Waiter;
+	  std::condition_variable m_Waiter; // wait until queue empty
 	  std::mutex m_WaiterMutex;
    };
   
 
    CDynamicPool::~CDynamicPool()
    {
-       #ifdef LOG
-            g_Logger.WriteToFileWithNewLine("[CDynamicPool::~CDynamicPool] Workers = " + std::to_string(m_Workers.size()) + " Queue size =" + std::to_string(m_TaskQueue.Size()));
-         #endif  
+      #ifdef LOG
+         g_Logger.WriteToFileWithNewLine("[CDynamicPool::~CDynamicPool] Workers = " + std::to_string(m_Workers.size()) + " Queue size =" + std::to_string(m_TaskQueue.Size()));
+      #endif  
       StopAcceptingNewTasks();
 	  WaitUntilQueueEmpty();
       m_PoolStatus = PoolStatus::Stopped;
@@ -83,14 +81,12 @@ namespace thread_pool
    {
       if (m_PoolStatus != PoolStatus::Stopped)
       {     
-		 std::unique_lock<std::mutex> guard(m_WorkersMutex);
          if(m_Workers.size() >= m_ui16MaxWorkers)
          {
             return false;
          } 
          std::thread tempThread (&CDynamicPool::Run, this);
 		 m_Workers[tempThread.get_id()] = std::move(tempThread);
-		 guard.unlock();
          #ifdef LOG
             g_Logger.WriteToFileWithNewLine("[CreateWorker] Workers = " + std::to_string(m_Workers.size()) +" "+ ThreadIDToString(std::this_thread::get_id()));
          #endif  
@@ -100,20 +96,20 @@ namespace thread_pool
       return false;
    } 
 /////////////////////////////////////////////////////////////////////////////////////
-   void CDynamicPool::DestroyWorker(const ThreadID & IdThreadToDestory)
+   void CDynamicPool::DestroyWorker(const ThreadID IdThreadToDestory)
    {
-      if (m_PoolStatus != PoolStatus::Stopped)
-      {
-		  {
-			  std::scoped_lock<std::mutex> guard(m_WorkersMutex);
-			  m_Workers[IdThreadToDestory].join();
-			  m_Workers.erase(IdThreadToDestory);
-			  --m_ui16DestroyWorkersCounter;
+	   m_TaskQueue.AddElement([this, IdThreadToDestory]() {
+		   if (m_PoolStatus != PoolStatus::Stopped)
+		   {
+			   std::scoped_lock<std::mutex> guard(m_WorkersMutex);
+			   m_Workers[IdThreadToDestory].join();
+			   m_Workers.erase(IdThreadToDestory);
+			   --m_ui16DestroyWorkersCounter;
 #ifdef LOG
-			  g_Logger.WriteToFileWithNewLine("[DestroyWorker] Workers = " + std::to_string(m_Workers.size()) +" remained");
+			   g_Logger.WriteToFileWithNewLine("[DestroyWorker] Workers = " + std::to_string(m_Workers.size()) + " remained");
 #endif  
-		  }
-      }
+		   }
+	   });
    }
 /////////////////////////////////////////////////////////////////////////////////////
    void CDynamicPool::StopAcceptingNewTasks()
@@ -153,13 +149,13 @@ namespace thread_pool
 			std::unique_lock<std::mutex> guard(m_WorkersMutex);
             if(m_Workers.size() - m_ui16DestroyWorkersCounter > m_ui16MinWorkers)
             {
-               #ifdef LOG
-               g_Logger.WriteToFileWithNewLine("[Run] TimeOut = " + ThreadIDToString(std::this_thread::get_id())+ " Workers = " + std::to_string(m_Workers.size()));
-               #endif
+                #ifdef LOG
+                 g_Logger.WriteToFileWithNewLine("[Run] TimeOut = " + ThreadIDToString(std::this_thread::get_id())+ " Workers = " + std::to_string(m_Workers.size()));
+                #endif
                // thread is not useful destroy it
-               AddTaskWithoutResult2([this](ThreadID threadIdToDestroy){DestroyWorker(threadIdToDestroy);}, std::this_thread::get_id());
-			   ++m_ui16DestroyWorkersCounter;
-               break;
+				DestroyWorker(std::this_thread::get_id());
+			    ++m_ui16DestroyWorkersCounter;
+                break;
             }
             else
             {
@@ -226,60 +222,25 @@ namespace thread_pool
    {
       if(m_PoolStatus == PoolStatus::Running || m_PoolStatus == PoolStatus::Configured)
       {
-      //get return type of the function
-        //typedef decltype(f(args...)) retType;
-
          using PackedTask = std::packaged_task<typename std::result_of<TCallable(TArgs...)>::type()>;
          auto task = std::make_shared<PackedTask>(std::bind(std::forward<TCallable>(func), std::forward<TArgs>(args)...));
-        //package the task
-         //std::packaged_task<retType()> task(std::move(std::bind(f, args...)));
-              //get the future from the task before the task is moved into the jobqueue
-        // lock jobqueue mutex, add job to the job queue
 
-        //place the job into the queue
         m_TaskQueue.AddElement([task](){ (*task)();});
         int64_t i64ThreadsToIncreaseNumber = m_fpIncreaseThreadsAlgorithm(m_TaskQueue.Size());
         {
-			std::uint16_t ui16TempWorkersSize = 0;
-			{
-				std::scoped_lock<std::mutex> guard(m_WorkersMutex);
-				ui16TempWorkersSize = m_Workers.size();
-			}
-			std::uint16_t ui16ThreadsPerfectSize = i64ThreadsToIncreaseNumber - ui16TempWorkersSize;
-               for(int64_t i = 0; i < ui16ThreadsPerfectSize; ++i)
-               {
-                  if(!CreateWorker())
-                  {
-                     break;
-                  }
-               }
-              
+			std::scoped_lock<std::mutex> guard(m_WorkersMutex);
+			std::uint16_t ui16ThreadsPerfectSize = i64ThreadsToIncreaseNumber - m_Workers.size();
+            for(int64_t i = 0; i < ui16ThreadsPerfectSize; ++i)
+            {
+                if(!CreateWorker())
+                {
+                    break;
+                }
+            }
         }
-        //return the future for the function so the user can get the return value
       }
    }
 
-
-   template <typename TCallable, typename ... TArgs>
-   void CDynamicPool::AddTaskWithoutResult2(TCallable &&func, TArgs &&... args)
-   {
-      if(m_PoolStatus == PoolStatus::Running || m_PoolStatus == PoolStatus::Configured)
-      {
-      //get return type of the function
-        //typedef decltype(f(args...)) retType;
-
-         using PackedTask = std::packaged_task<typename std::result_of<TCallable(TArgs...)>::type()>;
-         auto task = std::make_shared<PackedTask>(std::bind(std::forward<TCallable>(func), std::forward<TArgs>(args)...));
-        //package the task
-         //std::packaged_task<retType()> task(std::move(std::bind(f, args...)));
-              //get the future from the task before the task is moved into the jobqueue
-        // lock jobqueue mutex, add job to the job queue
-
-        //place the job into the queue
-        m_TaskQueue.AddElement([task](){ (*task)();});
-        //return the future for the function so the user can get the return value
-      }
-   }
 /////////////////////////////////////////////////////////////////////////////////////
    bool CDynamicPool::Initialize(const uint16_t ui16MinWorkers,
                    const uint16_t ui16MaxWorkers,
