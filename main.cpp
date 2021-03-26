@@ -6,12 +6,13 @@
 #include "ThreadPool.h"
 #include "Logger.h"
 
+using namespace thread_pool;
 CLogger g_Logger;
 int main(int argc, char const *argv[]) {
 	thread_pool::CDynamicPool pool;
 try
 {
-
+	std::vector<std::thread> threads;
   do
   {
     if(!g_Logger.Initialize("File.txt"))
@@ -25,7 +26,7 @@ try
      break;
    }
 
-    if(!pool.Initialize(3,20,std::chrono::milliseconds(50),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
+    if(!pool.Initialize(3,50,std::chrono::milliseconds(400),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
     {
       break;
     }
@@ -36,26 +37,23 @@ try
     }
   } while (false);
   
-
-  int i = 0;
-  while (i< 1000)
+  auto TaskToAdd = []() {
+		  std::uint8_t tempCounter = 0;
+		  while (tempCounter != 10000 )
+		  {
+			  tempCounter++;
+		  }};
+  int newCounter = 0;
+  while (newCounter != 10)
   {
-    pool.AddTaskWithoutResult([](int a){
-	std::cout << "Hello World " + std::to_string(a) + '\n';
-    }, i);
-    i++;
+	  threads.push_back(std::thread(&CDynamicPool::AddTaskWithoutResult<std::function<void()>>, &pool, []() {
+		  std::uint8_t tempCounter = 0;
+		  while (tempCounter != 10000)
+		  {
+			  tempCounter++;
+		  }}));
+	  newCounter++;
   }
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-    int b = 0;
-  while (b< 100000)
-  {
-    pool.AddTaskWithoutResult([](int a){
-    std::cout << "Hello World " + std::to_string(a) + '\n';
-    }, b);
-    b++;
-  }
-  std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 }
 catch(const std::exception& e)
 {

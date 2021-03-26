@@ -1,11 +1,12 @@
 ﻿  main.cpp
 d:\threadpools\threadpool.h(144): warning C4553: '==': result of expression not used; did you intend '='?
-d:\threadpools\threadpool.h(243): warning C4244: 'initializing': conversion from 'int64_t' to 'uint16_t', possible loss of data
-  d:\threadpools\main.cpp(45): note: see reference to function template instantiation 'void thread_pool::CDynamicPool::AddTaskWithoutResult<main::<lambda_5ddc6d18732bdf967b8251bbd755e3d9>,int&>(TCallable &&,int &)' being compiled
+d:\threadpools\threadpool.h(226): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+  d:\threadpools\main.cpp(54): note: see reference to function template instantiation 'void thread_pool::CDynamicPool::AddTaskWithoutResult<std::function<void (void)>,>(TCallable &&)' being compiled
           with
           [
-              TCallable=main::<lambda_5ddc6d18732bdf967b8251bbd755e3d9>
+              TCallable=std::function<void (void)>
           ]
+d:\threadpools\threadpool.h(248): warning C4244: 'initializing': conversion from 'int64_t' to 'uint16_t', possible loss of data
 c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\type_traits(16707566): warning C4244: 'return': conversion from 'uint64_t' to '_Rx', possible loss of data
           with
           [
@@ -48,12 +49,12 @@ c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.1
               _Ret=uint16_t,
               _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
           ]
-  d:\threadpools\main.cpp(28): note: see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,void>(_Fx)' being compiled
+  d:\threadpools\main.cpp(29): note: see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,void>(_Fx)' being compiled
           with
           [
               _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
           ]
-  d:\threadpools\main.cpp(28): note: see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,void>(_Fx)' being compiled
+  d:\threadpools\main.cpp(29): note: see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_85c25ad45629ad7fbdc354ed87251534>,void>(_Fx)' being compiled
           with
           [
               _Fx=main::<lambda_85c25ad45629ad7fbdc354ed87251534>
