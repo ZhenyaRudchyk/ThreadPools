@@ -1,10 +1,12 @@
 #pragma once
+
 #include <atomic>
 #include <queue>
 #include <functional>
 #include <condition_variable>
 #include <mutex>
 #include <chrono>
+
 #include "Logger.h"
 
 template<typename T>
@@ -31,6 +33,7 @@ template<typename T>
     WaitResult GetElement(T& element);
     void AddElement(const T& value );
     uint64_t Size() const;
+	bool Empty();
 
  private:
   std::condition_variable m_Notifier;
@@ -91,7 +94,7 @@ template<typename T>
 uint64_t CThreadSafeQueue<T>::Size() const
 {
     std::scoped_lock<std::mutex> guard(m_Locker);
-    return m_Queue.size();
+    return static_cast<uint64_t>(m_Queue.size());
 }
 ////////////////////////////////////////////////////////////////////////////////
 template<typename T>
@@ -112,4 +115,11 @@ void CThreadSafeQueue<T>::WakeUpAllThreads()
  void CThreadSafeQueue<T>::IncreaseWaitTime()
  {
      m_WaitTime = m_WaitTime * 2;
+ }
+
+ template<typename T>
+ bool CThreadSafeQueue<T>::Empty()
+ {
+	 std::scoped_lock<std::mutex> guard(m_Locker);
+	 return m_Queue.empty();
  }

@@ -5,7 +5,7 @@
 #include <mutex>
 #include <fstream>
 #include <sstream>
-//#define LOG
+#define LOG
 class CLogger
 {
 public:

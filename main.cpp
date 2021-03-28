@@ -1,17 +1,19 @@
 #include <cstring>
 
 #include <iostream>
+#include <vector>
 
-
-#include "ThreadPool.h"
+#include "DynamicPool.h"
+#include "ScopedThread.h"
 #include "Logger.h"
+#include "TestTask.h"
 
 using namespace thread_pool;
 CLogger g_Logger;
 int main(int argc, char const *argv[]) {
 	thread_pool::CDynamicPool pool;
 
-	std::vector<std::thread> threads;
+	std::vector<utils::CScopedThread> threads;
   do
   {
     if(!g_Logger.Initialize("File.txt"))
@@ -37,22 +39,26 @@ int main(int argc, char const *argv[]) {
   } while (false);
   
   auto TaskToAdd = [&pool]() {
-   for (size_t i = 0; i < 10000; ++i)
-   {
-      pool.AddTaskWithoutResult([](){ std::this_thread::sleep_for(std::chrono::milliseconds(100));  });
-   }
+  
+      pool.AddTaskWithoutResult([](){ 
+          for (size_t i = 0; i < 10; ++i)
+          {
+          std::cout << "hello world!!!"<< std::endl;
+      
+          } });
 };
   int newCounter = 0;
   while (newCounter != 5)
   {
-	  threads.push_back(std::thread(&CDynamicPool::AddTaskWithoutResult<std::function<void()>>, &pool, TaskToAdd));
+	  threads.push_back(utils::CScopedThread(&CDynamicPool::AddTaskWithoutResult<std::function<void()>>, &pool, TaskToAdd));
 	  newCounter++;
   }
-  
-  std::for_each(threads.begin(), threads.end(), [](std::thread& x) { x.join(); });
+  CTestTask test;
+  auto CancelAction = test.GetCancellationFlag();
+  pool.AddTaskWithoutResult([&test]() {test.Execute(); });
 
-  //std::this_thread::sleep_for(std::chrono::seconds(50));
+ *CancelAction = true;
+
+   std::this_thread::sleep_for(std::chrono::seconds(5));
   return 0; 
 }
-//benchmark with time on linux
-// 0.205
