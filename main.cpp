@@ -9,14 +9,14 @@
 #include "TestTask.h"
 
 using namespace thread_pool;
-CLogger g_Logger;
+//CLogger g_Logger;
 int main(int argc, char const *argv[]) {
 	thread_pool::CDynamicPool pool;
 
 	std::vector<utils::CScopedThread> threads;
   do
   {
-    if(!g_Logger.Initialize("File.txt"))
+   /* if(!g_Logger.Initialize("File.txt"))
     {
       std::cout << "Initialize failed!!!";
       break;
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
    if(!g_Logger.OpenFile())
    {
      break;
-   }
+   }*/
 
     if(!pool.Initialize(3,15,std::chrono::milliseconds(20),[](uint64_t ui64QueueSize){ return  ui64QueueSize % 30;}))
     {
@@ -44,7 +44,7 @@ int main(int argc, char const *argv[]) {
           for (size_t i = 0; i < 10; ++i)
           {
           std::cout << "hello world!!!"<< std::endl;
-      
+          std::this_thread::sleep_for(std::chrono::milliseconds(200));
           } });
 };
   int newCounter = 0;
@@ -53,12 +53,12 @@ int main(int argc, char const *argv[]) {
 	  threads.push_back(utils::CScopedThread(&CDynamicPool::AddTaskWithoutResult<std::function<void()>>, &pool, TaskToAdd));
 	  newCounter++;
   }
+
   CTestTask test;
-  auto CancelAction = test.GetCancellationFlag();
+  auto CancellationHandler = test.GetCancellationHandler();
   pool.AddTaskWithoutResult([&test]() {test.Execute(); });
-
- *CancelAction = true;
-
-   std::this_thread::sleep_for(std::chrono::seconds(5));
+  //utils::Task::CancelTask(CancellationHandler);
+  *CancellationHandler = true;
+ //std::this_thread::sleep_for(std::chrono::seconds(5));
   return 0; 
 }

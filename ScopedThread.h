@@ -10,11 +10,11 @@ namespace utils
 		template<class ...Args>
 		explicit CScopedThread(Args &&...args) : m_InternalThread(std::forward<Args>(args)...) {}
 
-		CScopedThread(CScopedThread &&other) {
+		CScopedThread(CScopedThread &&other) noexcept {
 			m_InternalThread = std::move(other.m_InternalThread);
 		}
 
-		CScopedThread &operator=(CScopedThread &&other) {
+		CScopedThread &operator=(CScopedThread &&other) noexcept {
 			m_InternalThread = std::move(other.m_InternalThread);
 			return *this;
 		}

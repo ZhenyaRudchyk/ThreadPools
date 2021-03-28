@@ -47,9 +47,6 @@
     <ClInclude Include="..\..\Task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ScopedThread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\TestTask.h">
       <Filter>Header Files</Filter>
     </ClInclude>

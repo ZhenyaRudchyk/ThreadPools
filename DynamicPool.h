@@ -66,6 +66,7 @@ namespace thread_pool
 	  WaitUntilQueueEmpty();
       m_PoolStatus = PoolStatus::Stopped;
       m_TaskQueue.WakeUpAllThreads();
+      std::for_each(m_Workers.begin(), m_Workers.end(), [](ThreadMap::value_type& x) { (x.second).join(); });
    }
 /////////////////////////////////////////////////////////////////////////////////////
    bool CDynamicPool::CreateWorker()
@@ -76,7 +77,7 @@ namespace thread_pool
          {
             return false;
          }
-         utils::CScopedThread tempThread (&CDynamicPool::Run, this);
+         std::thread tempThread (&CDynamicPool::Run, this);
 		    m_Workers[tempThread.get_id()] = std::move(tempThread);
          #ifdef LOG
             g_Logger.WriteToFileWithNewLine("[CreateWorker] Workers = " + std::to_string(m_Workers.size()) +" "+ ThreadIDToString(std::this_thread::get_id()));

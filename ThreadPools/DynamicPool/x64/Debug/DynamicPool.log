@@ -1,10 +1,18 @@
-﻿  main.cpp
-D:\ThreadPools\DynamicPool.h(133,23): warning C4553: '==': result of expression not used; did you intend '='?
-D:\ThreadPools\DynamicPool.h(215,1): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
-D:\ThreadPools\main.cpp(48): message : see reference to function template instantiation 'void thread_pool::CDynamicPool::AddTaskWithoutResult<main::<lambda_a007f8efcd52198b6d16c99d438ee0ca>::()::<lambda_d40b5e06ff191cfae6dbea6c68ec7993>,>(TCallable &&)' being compiled
+﻿  Task.cpp
+D:\ThreadPools\Task.h(17,1): warning C4010: single-line comment contains line-continuation character
+D:\ThreadPools\Task.h(18,1): warning C4010: single-line comment contains line-continuation character
+  TestTask.cpp
+D:\ThreadPools\Task.h(17,1): warning C4010: single-line comment contains line-continuation character
+D:\ThreadPools\Task.h(18,1): warning C4010: single-line comment contains line-continuation character
+  main.cpp
+D:\ThreadPools\Task.h(17,1): warning C4010: single-line comment contains line-continuation character
+D:\ThreadPools\Task.h(18,1): warning C4010: single-line comment contains line-continuation character
+D:\ThreadPools\DynamicPool.h(134,23): warning C4553: '==': result of expression not used; did you intend '='?
+D:\ThreadPools\DynamicPool.h(216,1): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
+D:\ThreadPools\main.cpp(48): message : see reference to function template instantiation 'void thread_pool::CDynamicPool::AddTaskWithoutResult<main::<lambda_79fb35ca080e6164c788d92cbeb60457>::()::<lambda_b60c4022426225733590f33daeb30cdd>,>(TCallable &&)' being compiled
           with
           [
-              TCallable=main::<lambda_a007f8efcd52198b6d16c99d438ee0ca>::()::<lambda_d40b5e06ff191cfae6dbea6c68ec7993>
+              TCallable=main::<lambda_79fb35ca080e6164c788d92cbeb60457>::()::<lambda_b60c4022426225733590f33daeb30cdd>
           ]
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(753,27): warning C4244: 'return': conversion from 'uint64_t' to '_Rx', possible loss of data
           with
@@ -15,49 +23,50 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
           with
           [
               _Rx=uint16_t,
-              _Callable=main::<lambda_de8bdf538a559becf10d5e10af9ee192>,
+              _Callable=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,
               _Ty=uint64_t,
-              _Fx=main::<lambda_de8bdf538a559becf10d5e10af9ee192> &
+              _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb> &
           ]
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(938): message : see reference to function template instantiation '_Rx std::_Invoker_ret<_Rx,false>::_Call<_Callable&,_Ty>(_Fx,_Ty &&) noexcept(false)' being compiled
           with
           [
               _Rx=uint16_t,
-              _Callable=main::<lambda_de8bdf538a559becf10d5e10af9ee192>,
+              _Callable=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,
               _Ty=uint64_t,
-              _Fx=main::<lambda_de8bdf538a559becf10d5e10af9ee192> &
+              _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb> &
           ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(937): message : while compiling class template member function '_Rx std::_Func_impl_no_alloc<main::<lambda_de8bdf538a559becf10d5e10af9ee192>,_Rx,uint64_t>::_Do_call(uint64_t &&)'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(937): message : while compiling class template member function '_Rx std::_Func_impl_no_alloc<main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,_Rx,uint64_t>::_Do_call(uint64_t &&)'
           with
           [
               _Rx=uint16_t
           ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(831): message : see reference to class template instantiation 'std::_Func_impl_no_alloc<main::<lambda_de8bdf538a559becf10d5e10af9ee192>,_Ret,uint64_t>' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(831): message : see reference to class template instantiation 'std::_Func_impl_no_alloc<main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,_Ret,uint64_t>' being compiled
           with
           [
               _Ret=uint16_t
           ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(1028): message : see reference to variable template 'const bool _Is_large<std::_Func_impl_no_alloc<<lambda_de8bdf538a559becf10d5e10af9ee192>,unsigned short,unsigned __int64> >' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(1161): message : see reference to function template instantiation 'void std::_Func_class<_Ret,uint64_t>::_Reset<main::<lambda_de8bdf538a559becf10d5e10af9ee192>>(_Fx &&)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(1028): message : see reference to variable template 'const bool _Is_large<std::_Func_impl_no_alloc<<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,unsigned short,unsigned __int64> >' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(1161): message : see reference to function template instantiation 'void std::_Func_class<_Ret,uint64_t>::_Reset<main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>>(_Fx &&)' being compiled
           with
           [
               _Ret=uint16_t,
-              _Fx=main::<lambda_de8bdf538a559becf10d5e10af9ee192>
+              _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>
           ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(1161): message : see reference to function template instantiation 'void std::_Func_class<_Ret,uint64_t>::_Reset<main::<lambda_de8bdf538a559becf10d5e10af9ee192>>(_Fx &&)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(1161): message : see reference to function template instantiation 'void std::_Func_class<_Ret,uint64_t>::_Reset<main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>>(_Fx &&)' being compiled
           with
           [
               _Ret=uint16_t,
-              _Fx=main::<lambda_de8bdf538a559becf10d5e10af9ee192>
+              _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>
           ]
-D:\ThreadPools\main.cpp(30): message : see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_de8bdf538a559becf10d5e10af9ee192>,0>(_Fx)' being compiled
+D:\ThreadPools\main.cpp(30): message : see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,0>(_Fx)' being compiled
           with
           [
-              _Fx=main::<lambda_de8bdf538a559becf10d5e10af9ee192>
+              _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>
           ]
-D:\ThreadPools\main.cpp(30): message : see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_de8bdf538a559becf10d5e10af9ee192>,0>(_Fx)' being compiled
+D:\ThreadPools\main.cpp(30): message : see reference to function template instantiation 'std::function<uint16_t (uint64_t)>::function<main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>,0>(_Fx)' being compiled
           with
           [
-              _Fx=main::<lambda_de8bdf538a559becf10d5e10af9ee192>
+              _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>
           ]
+  Generating Code...
   DynamicPool.vcxproj -> D:\ThreadPools\ThreadPools\x64\Debug\DynamicPool.exe

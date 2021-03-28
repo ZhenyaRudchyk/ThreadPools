@@ -6,9 +6,22 @@
 
 namespace utils
 {
+	//#define TASK_BEGIN m_TaskStatus = utils::TaskStatus::Processing; 
+
+#define CANNCELLATION_POINT if (IsCancelled()){ return; }
+			//m_TaskStatus = utils::TaskStatus::Finished; \
+			//m_TaskResult = utils::TaskResult::Cancelled; 
+
+
+//#define TASK_END \
+			m_TaskStatus = utils::TaskStatus::Finished; \
+			m_TaskResult = utils::TaskResult::Success; 
+
+
 	using ThreadSafeFlag = std::shared_ptr<std::atomic<bool>>;
+
 	//Point were task can be interrupted. User should define this points in realization of Execute.
-	#define CANNCELLATION_POINT if(IsCancelled()){ return; }
+
 	enum class TaskResult
 	{
 		Unknown,
@@ -33,9 +46,9 @@ namespace utils
 			m_CancellationFlag(std::make_shared<std::atomic<bool>>(false))
 		{}
 		virtual void Execute() = 0;
-		void Cancel();
-		ThreadSafeFlag GetCancellationFlag();
+		ThreadSafeFlag GetCancellationHandler();
 		TaskStatus GetTaskStatus() const;
+		static void CancelTask(ThreadSafeFlag& task);
 		bool IsCancelled();
 	protected: 
 		ThreadSafeFlag m_CancellationFlag;

@@ -19,6 +19,7 @@ namespace thread_pool
 		RunningButDoNotAcceptNewTasks
 	};
 	using Task = std::function<void()>;
-	using ThreadMap = std::unordered_map<utils::CScopedThread::ThreadID, utils::CScopedThread>;
+	using ThreadID = std::thread::id;
+	using ThreadMap = std::unordered_map<ThreadID, std::thread>;
 	using IncreaseThreads = std::function<uint16_t(uint64_t)>;
 }
