@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿  Task.cpp
 D:\ThreadPools\Task.h(17,1): warning C4010: single-line comment contains line-continuation character
 D:\ThreadPools\Task.h(18,1): warning C4010: single-line comment contains line-continuation character
@@ -69,4 +70,7 @@ D:\ThreadPools\main.cpp(30): message : see reference to function template instan
               _Fx=main::<lambda_eae20cc81b498320b13a9ad32ef0bbdb>
           ]
   Generating Code...
+=======
+﻿  DobleQueueContainer.h
+>>>>>>> Stashed changes
   DynamicPool.vcxproj -> D:\ThreadPools\ThreadPools\x64\Debug\DynamicPool.exe

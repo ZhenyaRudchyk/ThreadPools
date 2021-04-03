@@ -18,7 +18,7 @@
     <ClCompile Include="..\..\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\DobleQueueContainer.cpp">
+    <ClCompile Include="..\..\DobleQueueContainer.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Task.cpp">
@@ -48,6 +48,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\TestTask.h">
+<<<<<<< Updated upstream
+=======
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DynamicPool_V2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ITask.h">
+>>>>>>> Stashed changes
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

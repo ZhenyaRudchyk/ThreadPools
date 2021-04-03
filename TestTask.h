@@ -2,8 +2,12 @@
 
 #include "Task.h"
 
-class CTestTask : public utils::Task
+class CTestCancellableTask : public utils::CancellableTask
 {
 public:
+	CTestCancellableTask():utils::CancellableTask()
+	{}
+	~CTestCancellableTask() override
+	{}
 	void Execute();
 };

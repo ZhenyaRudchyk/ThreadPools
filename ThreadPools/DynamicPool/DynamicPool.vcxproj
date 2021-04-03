@@ -131,12 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\DobleQueueContainer.cpp" />
+    <ClCompile Include="..\..\DobleQueueContainer.h" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\..\Task.cpp" />
     <ClCompile Include="..\..\TestTask.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\DynamicPool_V2.h" />
     <ClInclude Include="..\..\Logger.h" />
     <ClInclude Include="..\..\DynamicPool.h" />
     <ClInclude Include="..\..\StaticPool.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="..\..\TestTask.h" />
     <ClInclude Include="..\..\ThreadSafeQueue.h" />
     <ClInclude Include="..\..\Util.h" />
+    <ClInclude Include="ITask.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
