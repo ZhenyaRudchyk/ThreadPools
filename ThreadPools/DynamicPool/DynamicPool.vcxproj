@@ -91,6 +91,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\ThreadPools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,21 +132,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\DobleQueueContainer.h" />
+    <ClCompile Include="..\..\CreateWorkerTask.cpp" />
+    <ClCompile Include="..\..\DestroyThreadTask.cpp" />
+    <ClCompile Include="..\..\DynamicPool.cpp" />
     <ClCompile Include="..\..\main.cpp" />
-    <ClCompile Include="..\..\Task.cpp" />
-    <ClCompile Include="..\..\TestTask.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\DynamicPool_V2.h" />
-    <ClInclude Include="..\..\Logger.h" />
+    <ClInclude Include="..\..\CreateWorkerTask.h" />
+    <ClInclude Include="..\..\DestroyThreadTask.h" />
+    <ClInclude Include="..\..\DummyTask.h" />
+    <ClInclude Include="..\..\ITask.h" />
     <ClInclude Include="..\..\DynamicPool.h" />
-    <ClInclude Include="..\..\StaticPool.h" />
-    <ClInclude Include="..\..\Task.h" />
-    <ClInclude Include="..\..\TestTask.h" />
     <ClInclude Include="..\..\ThreadSafeQueue.h" />
     <ClInclude Include="..\..\Util.h" />
-    <ClInclude Include="ITask.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

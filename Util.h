@@ -1,15 +1,14 @@
 #pragma once
 
 #include <cstdint>
-
+#include <atomic>
 #include <thread>
 #include <functional>
 #include <unordered_map>
 
-namespace thread_pool
+namespace tp
 {
-	using TaskID = unsigned long long;
-
+ 
 	enum class WaitResult : std::uint8_t
 	{
 		GotElement,
@@ -19,19 +18,23 @@ namespace thread_pool
 
 	enum class PoolStatus : std::uint8_t
 	{
-		Stopped,
 		Configured,
 		Running,
-		RunUntilQueueEmptyAndDoNotAcceptNewTasks
+		Stopped
 	};
-	using Task = std::function<void()>;
-<<<<<<< Updated upstream
 	using ThreadID = std::thread::id;
-	using ThreadMap = std::unordered_map<ThreadID, std::thread>;
-	using IncreaseThreads = std::function<uint16_t(uint64_t)>;
-=======
-	using ThreadMap = std::unordered_map<std::thread::id, std::thread>;
-	using ThreadID = std::thread::id;
-	using IncreaseThreads = std::function<std::uint16_t(std::uint64_t)>;
->>>>>>> Stashed changes
+	using ThreadHashMap = std::unordered_map<ThreadID, std::thread>;
+	using IncreaseThreads = std::function<size_t(size_t)>;
+
+
+#define SYNCHRONIZED(m, code) { \
+		std::scoped_lock<std::mutex> lock(m); \
+			code \
+		}
+
+	#define SYNCHRONIZED_INVOCABLE(m, code) std::invoke([this](){ \
+		std::scoped_lock<std::mutex> lock(m); \
+			return code; \
+		})
+
 }
