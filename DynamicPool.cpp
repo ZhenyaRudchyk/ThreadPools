@@ -69,7 +69,7 @@ namespace tp
         if ((m_PoolStatus == PoolStatus::Running) && pTask)
         {
             m_TaskQueue.AddElement(std::move(pTask));
-            if (SYNCHRONIZED_INVOCABLE(m_WorkersMutex, m_Workers.size()) !=  m_iMaxWorkers)
+            if (SYNCHRONIZED_INVOCABLE(m_WorkersMutex, m_Workers.size()) != m_iMaxWorkers)
             {
                 m_TaskQueue.AddElement(std::make_unique<tp_task::CMakeWorkerTask>(*this, m_fpIncreaseThreadsAlgorithm(m_TaskQueue.Size())));
             }

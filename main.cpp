@@ -1,5 +1,5 @@
 #include <cstring>
-
+#include <cmath> 
 #include <iostream>
 #include <vector>
 #include "DummyTask.h"
@@ -17,7 +17,7 @@ int main(int argc, char const *argv[]) {
   {
 
 
-    if(!pool.Initialize(7,30,std::chrono::milliseconds(100),[](size_t ui64QueueSize){ return  ui64QueueSize % 90;}))
+    if(!pool.Initialize(7,30,std::chrono::milliseconds(100),[](size_t queueSize){ return log(queueSize);}))
     {
       break;
     }
