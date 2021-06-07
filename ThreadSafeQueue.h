@@ -10,7 +10,7 @@
 #include "Util.h"
 
 
-// Unbounded Blocking MPMC priority queue
+// Unbounded Blocking MPMC queue
 
 template<typename T>
 class CThreadSafeQueue
