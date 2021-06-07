@@ -1,6 +1,0 @@
-﻿  CreateWorkerTask.cpp
-  DestroyThreadTask.cpp
-  DynamicPool.cpp
-  main.cpp
-  Generating Code...
-  DynamicPool.vcxproj -> D:\ThreadPools\ThreadPools\x64\Debug\DynamicPool.exe
