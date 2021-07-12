@@ -5,36 +5,24 @@
 #include <thread>
 #include <functional>
 #include <unordered_map>
+#include <utility>
+
+#include "SkopedThread.h"
 
 namespace tp
 {
  
 	enum class WaitResult : std::uint8_t
 	{
+		Unknown,
 		GotElement,
 		Timeout,
-		WakeUpAll
+		Stop
 	};
 
-	enum class PoolStatus : std::uint8_t
-	{
-		Configured,
-		Running,
-		Stopped
-	};
-	using ThreadID = std::thread::id;
-	using ThreadHashMap = std::unordered_map<ThreadID, std::thread>;
-	using IncreaseThreads = std::function<size_t(size_t)>;
-
-
-#define SYNCHRONIZED(m, code) { \
-		std::scoped_lock<std::mutex> lock(m); \
-			code \
-		}
-
-	#define SYNCHRONIZED_INVOCABLE(m, code) std::invoke([this](){ \
-		std::scoped_lock<std::mutex> lock(m); \
-			return code; \
-		})
+	using Task = std::function<void()>;
+	using DynamicTask = std::pair<Task, bool>;
+	using ThreadHashMapRAII = std::unordered_map<CScopedThread::ThreadID, CScopedThread>;
+	using DynamicThreadHashMapRAII = std::unordered_map<CScopedThread::ThreadID, std::unique_ptr<CScopedThread>>;
 
 }

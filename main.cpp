@@ -2,7 +2,6 @@
 #include <cmath> 
 #include <iostream>
 #include <vector>
-#include "DummyTask.h"
 #include "DynamicPool.h"
 
 using namespace tp;
@@ -11,46 +10,41 @@ int main(int argc, char const *argv[]) {
     try
     {
 
-    CDynamicPool pool;
+        CDynamicPool pool;
 
-  do
-  {
-
-
-    if(!pool.Initialize(7,30,std::chrono::milliseconds(100),[](size_t queueSize){ return log(queueSize);}))
-    {
-      break;
-    }
-
-    if(!pool.Start())
-    {
-      break;
-    }
-
-  } while (false);
+          pool.Start();
   
 
+      std::mutex mutex1;
+      for (size_t i = 1; i <= 100; i++)
+      {
+          Task task([i, &mutex1]() {
+              std::unique_lock<std::mutex>(mutex1);
+              std::cout << i << std::endl; });
+          pool.AddTaskWithoutResult(task);
+      }
 
-    for (size_t i = 0; i < 10000; i++)
-    {
-        auto dummyTask = std::make_unique<DummyTask>();
-        pool.AddTaskWithoutResult(std::move(dummyTask));
+      //std::this_thread::sleep_for(std::chrono::seconds(10));
+
+
+          for (size_t i = 1; i <= 100; i++)
+          {
+              Task task([i, &mutex1]() {
+                  std::unique_lock<std::mutex>(mutex1);
+                  std::cout << i << std::endl; });
+              pool.AddTaskWithoutResult(task);
+          }
+          std::this_thread::sleep_for(std::chrono::seconds(2));
     }
-    std::this_thread::sleep_for(std::chrono::seconds(15));
-
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    for (size_t i = 0; i < 10000; i++)
-    {
-        auto dummyTask = std::make_unique<DummyTask>();
-        pool.AddTaskWithoutResult(std::move(dummyTask));
-    }
-
-    }
-
     catch (const std::exception& a)
     {
         std::cout << a.what();
     }
     
+
+
+	
+
+
   return 0; 
 }

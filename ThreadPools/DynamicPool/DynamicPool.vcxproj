@@ -132,17 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\CreateWorkerTask.cpp" />
-    <ClCompile Include="..\..\DestroyThreadTask.cpp" />
     <ClCompile Include="..\..\DynamicPool.cpp" />
     <ClCompile Include="..\..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\CreateWorkerTask.h" />
-    <ClInclude Include="..\..\DestroyThreadTask.h" />
-    <ClInclude Include="..\..\DummyTask.h" />
-    <ClInclude Include="..\..\ITask.h" />
     <ClInclude Include="..\..\DynamicPool.h" />
+    <ClInclude Include="..\..\SkopedThread.h" />
     <ClInclude Include="..\..\ThreadSafeQueue.h" />
     <ClInclude Include="..\..\Util.h" />
   </ItemGroup>

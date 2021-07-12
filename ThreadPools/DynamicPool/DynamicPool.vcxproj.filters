@@ -2,30 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp" />
-    <ClCompile Include="..\..\DestroyThreadTask.cpp">
-      <Filter>Tasks</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\DynamicPool.cpp" />
-    <ClCompile Include="..\..\CreateWorkerTask.cpp">
-      <Filter>Tasks</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\DynamicPool.h" />
     <ClInclude Include="..\..\ThreadSafeQueue.h" />
     <ClInclude Include="..\..\Util.h" />
-    <ClInclude Include="..\..\ITask.h">
-      <Filter>Tasks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\DummyTask.h">
-      <Filter>Tasks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\DestroyThreadTask.h">
-      <Filter>Tasks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\CreateWorkerTask.h">
-      <Filter>Tasks</Filter>
-    </ClInclude>
+    <ClInclude Include="..\..\SkopedThread.h" />
+    <ClInclude Include="..\..\DynamicPool.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tasks">

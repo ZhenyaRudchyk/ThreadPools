@@ -1,0 +1,8 @@
+{
+  "coreDumpPath": "/mnt/d/ThreadPools/core",
+  "program": "/mnt/d/ThreadPools/thread_pool",
+  "sourceFileMap": "",
+  "additionalSOLibSearchPath": "",
+  "remoteMachine": 0,
+  "isWSL": true
+}

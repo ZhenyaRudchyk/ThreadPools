@@ -4,10 +4,9 @@
 #include <atomic>
 #include <thread>
 
-#include "ITask.h"
 #include "Util.h"
-#include "ThreadSafeQueue.h" 
-
+#include "ThreadSafeQueue.h"
+#include "SkopedThread.h"
 
 namespace tp_task
 {
@@ -17,41 +16,39 @@ namespace tp_task
 
 namespace tp
 {
-   
    class CDynamicPool 
    {
    public:
-        CDynamicPool():
-        m_fpIncreaseThreadsAlgorithm(nullptr),
-        m_PoolStatus(PoolStatus::Stopped),
-         m_iMaxWorkers(0),
-         m_iMinWorkers(0),
-        m_iInDesruction(0),
-        m_WaitTime(0)
+       CDynamicPool():
+        m_iMaxWorkers(std::thread::hardware_concurrency()),
+        m_iMinWorkers(1),
+        m_WaitTime(1000),
+        m_WorkersSize(0)
         {}
-        ~CDynamicPool();
 
-        bool Initialize(const size_t ui16MinWorkers,
-                        const size_t ui16MaxWorkers,
-                        std::chrono::milliseconds WaitTime,
-                        IncreaseThreads fpIncreaseThreadsAlgorithm);
-        bool Start();
-	    void AddTaskWithoutResult(std::unique_ptr<tp_task::ITask> task);
+       CDynamicPool(const size_t minWorkers, const size_t maxWorkers, const std::chrono::milliseconds waitTime) :
+           m_iMaxWorkers(maxWorkers),
+           m_iMinWorkers(minWorkers),
+           m_WaitTime(waitTime),
+           m_WorkersSize(0)
+       {}
+
+        ~CDynamicPool();
+        void Start();
+	    void AddTaskWithoutResult(Task task);
    protected:
-        void Run();   
-        void StopAcceptingNewTasks();
+        void Run(CScopedThread* currentWorker);
+        void CreateWorker();
+        void DestroyWorker(std::thread::id threadID);
    private:
-      ThreadHashMap m_Workers;
+      DynamicThreadHashMapRAII m_Workers;
+      int m_WorkersSize;
       std::mutex m_WorkersMutex;
-      size_t m_iMaxWorkers; // not const but should be change initialize only
-      size_t m_iMinWorkers; // not const but should be change in initialize only
+      const size_t m_iMaxWorkers; // not const but should be change initialize only
+      const size_t m_iMinWorkers; // not const but should be change in initialize only
       // return: number of threads increase to 1)Queue Size
-      IncreaseThreads m_fpIncreaseThreadsAlgorithm; // executes under multithreaded code. Take care about synchronization by yourself;
-      std::atomic<PoolStatus> m_PoolStatus;
-      size_t m_iInDesruction; // number of threads submited to destroy but are not destroyed yet
-      CThreadSafeQueue<tp_task::ITask> m_TaskQueue;
-      std::chrono::milliseconds m_WaitTime;
-      friend class tp_task::CDestroyWorker;
-      friend class tp_task::CMakeWorkerTask;
+      CThreadSafeQueue<tp::DynamicTask> m_TaskQueue;
+      const std::chrono::milliseconds m_WaitTime;
    };
 }
+
